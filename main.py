@@ -1,10 +1,8 @@
 #%% Imports
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import matplotlib.colors
+import time
 from MLManager import MLManager
+from DataManager import DataManager
 
 # Save XLSX to CSV
 def save_xlsx_to_csv():
@@ -12,23 +10,15 @@ def save_xlsx_to_csv():
     df.to_csv('Experiment-PolarData.csv', index=False)
 # save_xlsx_to_csv()
 
-def reset_state():
-    # Reset global variables or any stateful elements here
-    global ml_manager
-    ml_manager = None  # Resetting global variable
-
 def main():
     print("Start Simulation!")
-    data = pd.read_csv('Data/Experiment-PolarData.csv')   
-    ml_manager = MLManager(data)
-    ml_manager.preprocess()
-    ml_manager = None
-    # manager.train_model()
-    # manager.evaluate_model()
-    # manager.save_model("path/to/save/model.pkl")
-
+    raw_data = pd.read_csv('Data/Experiment-PolarData.csv')
+    data_manager = DataManager(raw_data)
+    ml_manager = MLManager(data_manager)
+    
 if __name__ == "__main__":
     main()
 
 # %%
-# Tags are the final stage of the chest.
+# Tags are "how good is the classification of the molecule - A:Best, D:Worse".
+# -> Those tags may be used as a scalar per read.

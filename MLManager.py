@@ -3,28 +3,9 @@ import pandas as pd
 
 class MLManager:
     
-    def __init__(self, data, model=None):
-        self.data = data
-        self.model = model
-
-    def preprocess(self):
-        if self.data is not None:
-            print("Preprocessing data...")
-            # Normalization
-            df_z_scaled = self.data.copy()
-            subframe = df_z_scaled.iloc[:, 3:].apply(lambda row: (row - row.mean()) / row.std(), axis=1)
-            
-            # view normalized data
-            # print(subframe.head())
-            print("subframe.head()")
-
-            # Reference Markers
-        else:
-            print("No data to preprocess.")
-
-
-
-
+    def __init__(self, dataManager):
+        self.dataManager = dataManager
+        self.model = None
 
     def train_model(self):
         """

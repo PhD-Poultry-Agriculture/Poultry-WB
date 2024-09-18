@@ -1,6 +1,5 @@
 #%% Imports
 import pandas as pd
-import time
 from MLManager import MLManager
 from DataManager import DataManager
 
@@ -15,9 +14,10 @@ def main():
     raw_data = pd.read_csv('Data/Experiment-PolarData.csv')
     data_manager = DataManager(raw_data)
     ml_manager = MLManager(data_manager)
-    
+    ml_manager.evaluate_model()
+
 if __name__ == "__main__":
-    main()
+    main()    
 
 # %%
 # Tags are "how good is the classification of the molecule - A:Best, D:Worse".

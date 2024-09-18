@@ -1,5 +1,5 @@
 import pandas as pd
-
+from DataManager import *
 
 class MLManager:
     
@@ -18,14 +18,7 @@ class MLManager:
             print("No data available for training.")
 
     def evaluate_model(self):
-        """
-        Evaluate the machine learning model on the test data.
-        """
-        if self.model is not None:
-            print("Evaluating the model...")
-            # Add model evaluation logic here
-        else:
-            print("No model to evaluate.")
+        self.data_groups[RossGroups.CONTROL]['C2']
 
     def save_model(self, file_path):
         """

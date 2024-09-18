@@ -6,7 +6,8 @@ class MLManager:
     def __init__(self, dataManager):
         self.dataManager = dataManager
         self.model = None
-
+        self.evaluate_model()
+        
     def train_model(self):
         """
         Train the machine learning model on the preprocessed data.
@@ -18,7 +19,8 @@ class MLManager:
             print("No data available for training.")
 
     def evaluate_model(self):
-        self.data_groups[RossGroups.CONTROL]['C2']
+        # self.data_groups[RossGroups.CONTROL]['C2']
+        self.dataManager.plot_averages()
 
     def save_model(self, file_path):
         """

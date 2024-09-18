@@ -1,5 +1,6 @@
 import pandas as pd
 from enum import Enum
+import matplotlib.pyplot as plt
 
 class RossGroups(Enum):
     CONTROL = 'Control'
@@ -38,6 +39,34 @@ class DataManager:
             # print(self.data_groups[RossGroups.WIDE_BREAST]['WB2'].tail(6))
         else:
             print("No data to preprocess.")
+
+    def plot_averages(self):
+        """Plot all averages for 'C' group in blue and 'WB' group in red."""
+        plt.figure(figsize=(10, 6))
+        key = 'T1C1'
+        # Plot averages for the 'C' (Control) group in blue
+        for index in range(1, self._CHICKENS_PER_GROUP):
+            control_index = 'C' + str(index)
+            if control_index in self.data_groups[RossGroups.CONTROL]:
+                avg_row = self.data_groups[RossGroups.CONTROL][control_index].loc[key]
+                first_column_avg = avg_row.iloc[0]
+                plt.scatter(index, first_column_avg, label=f'Control {control_index}', color='blue')
+
+        # Plot averages for the 'WB' (Wide Breast) group in red
+        for index in range(1, self._CHICKENS_PER_GROUP):
+            wb_index = 'WB' + str(index)
+            if wb_index in self.data_groups[RossGroups.WIDE_BREAST]:
+                avg_row = self.data_groups[RossGroups.WIDE_BREAST][wb_index].loc[key]
+                first_column_avg = avg_row.iloc[0]
+                plt.scatter(index, first_column_avg, label=f'Wide Breast {wb_index}', color='red')
+
+
+        plt.title('Averages for Control (C) and Wide Breast (WB) Groups')
+        plt.xlabel('Chemical Compounds')
+        plt.ylabel('Average Values')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
 
     def _normalize_columns(self, df, chicken_ref):
         """Helper method to normalize columns that contains the chicken's reference."""

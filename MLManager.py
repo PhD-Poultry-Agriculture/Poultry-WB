@@ -18,9 +18,9 @@ class MLManager:
         else:
             print("No data available for training.")
 
-    def evaluate_model(self):
-        # self.data_groups[RossGroups.CONTROL]['C2']
-        self.dataManager.plot_averages()
+    def evaluate_model(self):    
+        pass
+        # self.dataManager.plot_averages()
 
     def save_model(self, file_path):
         """

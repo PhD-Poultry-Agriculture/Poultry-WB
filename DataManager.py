@@ -10,7 +10,7 @@ class RossGroups(Enum):
 class DataManager:
     
     def __init__(self, raw_data):
-        self._CHICKENS_PER_GROUP = 8
+        self.CHICKENS_PER_GROUP = 8
         self.data = raw_data
         self.data_groups = {
             RossGroups.CONTROL: {},
@@ -40,24 +40,21 @@ class DataManager:
             self._process_group(df_T, RossGroups.CONTROL, 'C')
             self._process_group(df_T, RossGroups.WIDE_BREAST, 'WB')
             
-            # print(self._process_median_group(df_T, RossGroups.CONTROL, 'C').head(2))
             self._process_median_group(df_T, RossGroups.CONTROL, 'C')
             self._process_median_group(df_T, RossGroups.WIDE_BREAST, 'WB')
-            self.plot_average_tables(column_name='5-Keto-D-gluconic acid',key='median')
+            # self.plot_average_tables(column_name='GLUTAMATE',key='median')
         else:
             print("No data to preprocess.")
     
     def plot_average_tables(self, column_name=None, key='median'):
-        # Extract average tables
         avg_control = self.data_groups[RossGroups.CONTROL]['C-'+key]
         avg_wide_breast = self.data_groups[RossGroups.WIDE_BREAST]['WB-'+key]
 
-        # Ensure both tables have the same index (T1, T2, T3, T4)
         avg_control = avg_control.loc[['T1', 'T2', 'T3', 'T4']]
         avg_wide_breast = avg_wide_breast.loc[['T1', 'T2', 'T3', 'T4']]
 
         if column_name == None:
-            for column_name in avg_control.columns[1:]:  # Skip index column
+            for column_name in avg_control.columns[1:]:
                 plt.figure(figsize=(10, 6))
                 plt.plot(avg_control.index, avg_control[column_name], label='Control')
                 plt.plot(avg_wide_breast.index, avg_wide_breast[column_name], label='Wide Breast')
@@ -88,7 +85,7 @@ class DataManager:
     def _process_group(self, df_T, group_name, prefix):
         avg_table = pd.DataFrame()
 
-        for index in range(1, self._CHICKENS_PER_GROUP):
+        for index in range(1, self.CHICKENS_PER_GROUP):
             control_index = prefix + str(index)
             df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]
             
@@ -106,7 +103,7 @@ class DataManager:
             else:
                 avg_table += df_T_filtered
 
-        avg_table /= self._CHICKENS_PER_GROUP
+        avg_table /= self.CHICKENS_PER_GROUP
         avg_table.index = df_T_filtered.index
 
         avg_mean_row = avg_table.mean().to_frame().T
@@ -119,7 +116,7 @@ class DataManager:
     def _process_median_group(self, df_T, group_name, prefix):
         tables = []
         
-        for index in range(1, self._CHICKENS_PER_GROUP):
+        for index in range(1, self.CHICKENS_PER_GROUP):
             current_key = prefix + str(index)
             # print(self.data_groups[group_name])
             tables.append(self.data_groups[group_name][current_key])
@@ -132,11 +129,10 @@ class DataManager:
         median_table.iloc[:, 1:] = median_values
 
         self.data_groups[group_name][prefix + '-median'] = median_table
-        # print(self.data_groups[group_name][prefix + '-median'].head())
 
-        # return median_table
-
+    def get_medians_dataset(self):
+        C_median = self.data_groups[RossGroups.CONTROL]['C-median']
+        BW_median = self.data_groups[RossGroups.WIDE_BREAST]['WB-median']
+        return [C_median, BW_median]
 
 #%% End
-
-# %%

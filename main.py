@@ -14,7 +14,8 @@ def main():
     raw_data = pd.read_csv('Data/Experiment-PolarData.csv')
     data_manager = DataManager(raw_data)
     ml_manager = MLManager(data_manager)
-    ml_manager.evaluate_model()
+    # ml_manager.evaluate_model()
+    ml_manager.evaluate_fdr()
 
 if __name__ == "__main__":
     main()    

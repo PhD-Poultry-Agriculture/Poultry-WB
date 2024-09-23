@@ -135,4 +135,13 @@ class DataManager:
         BW_median = self.data_groups[RossGroups.WIDE_BREAST]['WB-median']
         return [C_median, BW_median]
 
+    def _distance_between_two_groups(self, df_group1, df_group2):
+        pass
+
+    def _create_permutations_distances(self):
+        pass
+        # 1. Compute original groups distance
+        # 2. Compute when switched 1, 2, ..., 7
+        # 3. Compute p-values regarding source-of-truth, 
+
 #%% End

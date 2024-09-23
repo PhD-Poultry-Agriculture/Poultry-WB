@@ -29,10 +29,10 @@ class MLManager:
         group_WB = chickens_list[1]
         
         columns_count = len(group_C.columns)
-        p_values = []
+        feature_p_values = []  # To store both feature names and their p-values
 
         for feature_index in range(1, columns_count):
-            # Collect all distances for each group across timestamps
+            feature_name = group_C.columns[feature_index]  # Get the feature name
             control_distances = []
             wb_distances = []
 
@@ -40,18 +40,29 @@ class MLManager:
                 control_distances.append(abs(group_C.iloc[timestamp, feature_index] - group_C.iloc[timestamp + 1, feature_index]))
                 wb_distances.append(abs(group_WB.iloc[timestamp, feature_index] - group_WB.iloc[timestamp + 1, feature_index]))
             
-            # Check if the distances have more than one value
+            # Perform t-test only if there are enough data points
             if len(control_distances) > 1 and len(wb_distances) > 1:
                 t_stat, p_value = stats.ttest_ind(control_distances, wb_distances)
-                p_values.append(p_value)
+                feature_p_values.append((feature_name, p_value))  # Store feature name and its p-value
             else:
-                p_values.append(np.nan)  # Append NaN if not enough data points
-        p_values.sort()
-        reject, pvals_corrected, _, _ = smm.multipletests(p_values, alpha=0.1, method='fdr_bh')
+                feature_p_values.append((feature_name, np.nan))  # Append NaN if not enough data points
 
-        print("P-values before correction:", p_values)
+        # Sort the list by p-value (p-value is the second item in the tuple)
+        feature_p_values.sort(key=lambda x: x[1])
+
+        # Extract the sorted p-values for FDR correction
+        p_values = [x[1] for x in feature_p_values]
+        reject, pvals_corrected, _, _ = smm.multipletests(p_values, alpha=0.3, method='fdr_bh')
+
+        # Print the results, preserving the feature names
+        print("Feature-wise P-values before correction:", feature_p_values)
         print("Reject the null hypothesis (FDR corrected):", reject)
         print("Corrected p-values:", pvals_corrected)
+
+        # Optionally, you can print or return the features that were significant after correction
+        significant_features = [feature_p_values[i][0] for i in range(len(reject)) if not reject[i]]
+        print("Significant features after FDR correction:", significant_features)
+
 
 
     def evaluate_model(self):

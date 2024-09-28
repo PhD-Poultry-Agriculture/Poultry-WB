@@ -24,49 +24,59 @@ class MLManager:
             print("No data available for training.")
 
     def evaluate_fdr(self):
-        chickens_list = self.dataManager.get_medians_dataset()
-        group_C = chickens_list[0]
-        group_WB = chickens_list[1]
+        # chickens_list = self.dataManager.get_medians_dataset()
+        # group_C = chickens_list[0]
+        # group_WB = chickens_list[1]
         
-        columns_count = len(group_C.columns)
-        feature_p_values = []  # To store both feature names and their p-values
+        # columns_count = len(group_C.columns)
+        # feature_p_values = []
+        
+        # for feature_index in range(1, columns_count):
+        #     feature_name = group_C.columns[feature_index]
+        #     control_distances = []
+        #     wb_distances = []
 
-        for feature_index in range(1, columns_count):
-            feature_name = group_C.columns[feature_index]  # Get the feature name
-            control_distances = []
-            wb_distances = []
-
-            for timestamp in range(1, 4):
-                control_distances.append(abs(group_C.iloc[timestamp, feature_index] - group_C.iloc[timestamp + 1, feature_index]))
-                wb_distances.append(abs(group_WB.iloc[timestamp, feature_index] - group_WB.iloc[timestamp + 1, feature_index]))
+        #     for timestamp in range(1, 4):
+        #         control_distances.append(abs(group_C.iloc[timestamp, feature_index] - group_C.iloc[timestamp + 1, feature_index]))
+        #         wb_distances.append(abs(group_WB.iloc[timestamp, feature_index] - group_WB.iloc[timestamp + 1, feature_index]))
             
-            # Perform t-test only if there are enough data points
-            if len(control_distances) > 1 and len(wb_distances) > 1:
-                t_stat, p_value = stats.ttest_ind(control_distances, wb_distances)
-                feature_p_values.append((feature_name, p_value))  # Store feature name and its p-value
-            else:
-                feature_p_values.append((feature_name, np.nan))  # Append NaN if not enough data points
-
-        # Sort the list by p-value (p-value is the second item in the tuple)
-        feature_p_values.sort(key=lambda x: x[1])
+        #     # Perform t-test only if there are enough data points
+        #     if len(control_distances) > 1 and len(wb_distances) > 1:
+        #         t_stat, p_value = stats.ttest_ind(control_distances, wb_distances)
+        #         feature_p_values.append((feature_name, p_value))  # Store feature name and its p-value
+        #     else:
+        #         feature_p_values.append((feature_name, np.nan))  # Append NaN if not enough data points
+        feature_p_values = self.dataManager._create_permutations_distances()
+        print('test 02')
+        print(feature_p_values)
+        # feature_p_values.sort(key=lambda x: x[1])
+        sorted_feature_p_values = sorted(feature_p_values.items(), key=lambda x: x[1])
 
         # Extract the sorted p-values for FDR correction
-        p_values = [x[1] for x in feature_p_values]
-        reject, pvals_corrected, _, _ = smm.multipletests(p_values, alpha=0.3, method='fdr_bh')
+       # Assuming feature_p_values is a dictionary where the key is the feature name and the value is the p-value
+        # Convert dictionary to a list of tuples (feature, p_value) and sort by p_value
+        sorted_feature_p_values = sorted(feature_p_values.items(), key=lambda x: x[1])
 
-        # Print the results, preserving the feature names
-        print("Feature-wise P-values before correction:", feature_p_values)
+        # Extract only the p-values (sorted by feature)
+        p_values = [x[1] for x in sorted_feature_p_values]
+
+        # Apply FDR correction (False Discovery Rate)
+        reject, pvals_corrected, _, _ = smm.multipletests(p_values, alpha=0.3, method='fdr_bh')
+        print('test 02.aa')
+
+        # Print the original sorted feature-wise p-values
+        print("Feature-wise P-values before correction (sorted):", sorted_feature_p_values)
+
+        # Print the results of FDR correction
         print("Reject the null hypothesis (FDR corrected):", reject)
         print("Corrected p-values:", pvals_corrected)
 
-        # Optionally, you can print or return the features that were significant after correction
-        significant_features = [feature_p_values[i][0] for i in range(len(reject)) if not reject[i]]
+        # Optionally, print or return the significant features that were not rejected by FDR correction
+        significant_features = [sorted_feature_p_values[i][0] for i in range(len(reject)) if not reject[i]]
         print("Significant features after FDR correction:", significant_features)
 
 
-
     def evaluate_model(self):
-        
         chickens_list = self.dataManager.get_medians_dataset()
         group_C = chickens_list[0]
         group_WB = chickens_list[1]
@@ -74,7 +84,7 @@ class MLManager:
         columns_count = len(group_C.columns)-1
         
         for cell_index in range(1, columns_count):
-            for timestamp in range(1, 4):                
+            for timestamp in range(1, 4):
                 distance_Ti = 0
                 distance_Ti += abs(group_C.iloc[timestamp, cell_index] - group_WB.iloc[timestamp, cell_index])
             current_column_key = group_C.columns[cell_index]

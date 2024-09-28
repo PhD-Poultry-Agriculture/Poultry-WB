@@ -219,7 +219,7 @@ class DataManager:
         for distance_vector in all_features_distances:
             feature_index = 0
             for distance_value in distance_vector:                
-                if distance_value <= groud_truth_distances[feature_index]:
+                if distance_value > groud_truth_distances[feature_index]:
                     count_agreements_GT[feature_index] += 1
                 feature_index += 1
         

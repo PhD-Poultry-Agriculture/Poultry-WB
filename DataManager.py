@@ -7,7 +7,7 @@ from itertools import combinations
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class RossGroups(Enum):
-    CONTROL = 'Control'
+    CONTROL = 'C'
     WIDE_BREAST = 'WB'
 
 class DataManager:
@@ -20,10 +20,7 @@ class DataManager:
             RossGroups.CONTROL: {},
             RossGroups.WIDE_BREAST : {}
         }
-        self.data_groups[RossGroups.CONTROL]['C-avg'] = pd.DataFrame()
-        self.data_groups[RossGroups.WIDE_BREAST]['WB-avg'] = pd.DataFrame()
-        self.data_groups[RossGroups.CONTROL]['C-median'] = pd.DataFrame()
-        self.data_groups[RossGroups.WIDE_BREAST]['WB-median'] = pd.DataFrame()
+        self.FEATURE_LST = []
         self._preprocess()
 
     def _preprocess(self):
@@ -31,21 +28,19 @@ class DataManager:
             print("Preprocessing data...")
             
             df_z_scaled = self.data.copy()            
-            # df_z_scaled = self._normalize_columns(df_z_scaled, 'C')
-            # df_z_scaled = self._normalize_columns(df_z_scaled, 'B')
+            # df_z_scaled = self._normalize(df_z_scaled, 'C')
+            # df_z_scaled = self._normalize(df_z_scaled, 'B')
 
             df_z_scaled = df_z_scaled.drop(['Tags', 'Formula'], axis=1)
             df_T = df_z_scaled.T
             df_T.columns = df_T.iloc[0]
             df_T.index.name = 'Timestamp'
-
             df_T = df_T.drop(df_T.index[0])
-           
-            self._process_group(df_T, RossGroups.CONTROL, 'C')
-            self._process_group(df_T, RossGroups.WIDE_BREAST, 'WB')
-            
-            self._process_median_group(df_T, RossGroups.CONTROL, 'C')
-            self._process_median_group(df_T, RossGroups.WIDE_BREAST, 'WB')
+            self._FEATURE_CNT = len(df_T.columns)-1
+            self.FEATURE_LST = df_T.columns.tolist()
+            self._process_group(df_T, RossGroups.CONTROL)
+            self._process_group(df_T, RossGroups.WIDE_BREAST)
+                        
             # self.plot_average_tables(column_name='GLUTAMATE',key='median')
         else:
             print("No data to preprocess.")
@@ -79,18 +74,18 @@ class DataManager:
             plt.legend()
             plt.show()
 
-    def _normalize_columns(self, df, chicken_ref):
+    def _normalize(self, df, chicken_ref):
         """Helper method to normalize columns that contains the chicken's reference."""
         columns = [col for col in df.columns if chicken_ref in col]
         if columns:
             df[columns] = df[columns].apply(lambda row: (row - row.mean()) / row.std(), axis=1)
         return df
 
-    def _process_group(self, df_T, group_name, prefix):
+    def _process_group(self, df_T, group_name):
         avg_table = pd.DataFrame()
 
         for index in range(1, self.CHICKENS_PER_GROUP+1):
-            control_index = prefix + str(index)
+            control_index = group_name.value + str(index)
             df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]
             
             df_T_filtered.index = df_T_filtered.index.str[:2]
@@ -115,29 +110,7 @@ class DataManager:
 
         avg_table_with_stats = pd.concat([avg_table, avg_mean_row])
 
-        self.data_groups[group_name][prefix + '-avg'] = avg_table_with_stats
-      
-    def _process_median_group(self, df_T, group_name, prefix):
-        tables = []
-        
-        for index in range(1, self.CHICKENS_PER_GROUP+1):
-            current_key = prefix + str(index)
-            # print(self.data_groups[group_name])
-            tables.append(self.data_groups[group_name][current_key])
-
-        if not tables:
-            raise ValueError("No tables found for the specified group.")
-
-        median_values = np.median([table.values[:, 1:] for table in tables], axis=0)
-        median_table = tables[0].copy()
-        median_table.iloc[:, 1:] = median_values
-
-        self.data_groups[group_name][prefix + '-median'] = median_table
-
-    def get_medians_dataset(self):
-        C_median = self.data_groups[RossGroups.CONTROL]['C-median']
-        BW_median = self.data_groups[RossGroups.WIDE_BREAST]['WB-median']
-        return [C_median, BW_median]
+        self.data_groups[group_name.value + '-avg'] = avg_table_with_stats
 
     def _distance_between_two_groups(self, df_group1, df_group2):
         features_count = len(df_group1.columns)
@@ -150,17 +123,9 @@ class DataManager:
         return distances_per_feature
 
     def _process_group_median(self, group):
-        # Assuming 'group' is a list of DataFrames where each DataFrame represents one chicken's data
-        # Concatenate all DataFrames into a single 3D NumPy array (rows x cols x chickens)
         data_stack = np.dstack([chicken.values for chicken in group])
-
-        # Calculate the median across the third dimension (the chicken axis) for each [i, j] position
         median_values = np.median(data_stack, axis=2)
-
-        # Create a DataFrame for the median values, preserving the original structure
         median_table = pd.DataFrame(median_values, index=group[0].index, columns=group[0].columns)
-
-        # Ensure that the ID column (first column) is preserved from the original DataFrame
         median_table.iloc[:, 0] = group[0].iloc[:, 0]
 
         return median_table
@@ -179,65 +144,83 @@ class DataManager:
         return valid_combinations
 
     def _create_permutations_distances(self):
-        features_count = len(self.data_groups[RossGroups.CONTROL]['C-median'].columns)-1
-        count_agreements_GT = [0]*features_count
+        count_agreements_GT = [0] * self._FEATURE_CNT
         chicks_by_index = {}
-       
-        for index in range(1, self.CHICKENS_PER_GROUP+1):  # Gather original two groups into dictionary
-            current_key_C = 'C' + str(index)
-            current_key_WB = 'WB' + str(index)
+    
+        # Populate chicks_by_index dictionary
+        for index in range(1, self.CHICKENS_PER_GROUP + 1):
+            current_key_C = RossGroups.CONTROL.value + str(index)
+            current_key_WB = RossGroups.WIDE_BREAST.value + str(index)
             
             if current_key_C in self.data_groups[RossGroups.CONTROL]:
                 indexon = str(index)
                 chicks_by_index[indexon] = self.data_groups[RossGroups.CONTROL][current_key_C]
 
             if current_key_WB in self.data_groups[RossGroups.WIDE_BREAST]:
-                chicks_by_index[str(index+self.CHICKENS_PER_GROUP)] = self.data_groups[RossGroups.WIDE_BREAST][current_key_WB]
-      
+                chicks_by_index[str(index + self.CHICKENS_PER_GROUP)] = self.data_groups[RossGroups.WIDE_BREAST][current_key_WB]
+
+        # Debug: Print the chicks_by_index dictionary
+        print("Chicks by index:", chicks_by_index)
+        
         n = self.CHICKENS_PER_GROUP * 2  
         combinations_list = self.generate_combinations(n)
         all_features_distances = []
         
         print('Total combinations:', len(combinations_list))
+        
         for idx, combination in enumerate(combinations_list):
-            print(f"Processing combination {idx+1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")  # Print current combination
+            print(f"Processing combination {idx+1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
 
             tuple_group_A = combination[0]
             tuple_group_B = combination[1]
 
             group_A = []
             group_B = []
-      
+            
             for value in tuple_group_A:
-                df = chicks_by_index[str(value)]
+                try:
+                    df = chicks_by_index[str(value)]
+                except KeyError:
+                    print(f"KeyError: {value} not found in chicks_by_index")
+                    raise  # Re-raise the exception after printing
+
                 group_A.append(df)
 
             for value in tuple_group_B:
-                df = chicks_by_index[str(value)]
+                try:
+                    df = chicks_by_index[str(value)]
+                except KeyError:
+                    print(f"KeyError: {value} not found in chicks_by_index")
+                    raise  # Re-raise the exception after printing
+
                 group_B.append(df)
 
+            # Compute distance between the two groups
             all_features_distances.append(
                 self._distance_between_two_groups(
                     self._process_group_median(group_A),
                     self._process_group_median(group_B)
                 )
             )
+
         groud_truth_distances = all_features_distances[0]
         all_features_distances = all_features_distances[1:]
 
         for distance_vector in all_features_distances:
             feature_index = 0
-            for distance_value in distance_vector:                
+            for distance_value in distance_vector:
                 if distance_value > groud_truth_distances[feature_index]:
                     count_agreements_GT[feature_index] += 1
                 feature_index += 1
         
-        # 3. Compute p-values regarding source-of-truth, 
+        # Compute p-values regarding source-of-truth
         p_value_per_feature = {}
-        columns = self.data_groups[RossGroups.CONTROL]['C-median'].columns.tolist()
-        p_values = [agreements / features_count for agreements in count_agreements_GT]
-        for index in range(0, features_count):
-            p_value_per_feature[columns[index]] = p_values[index]
+        p_values = [agreements / self._FEATURE_CNT for agreements in count_agreements_GT]
+        
+        for index in range(0, self._FEATURE_CNT):
+            p_value_per_feature[self.FEATURE_LST[index]] = p_values[index]
+        
         return p_value_per_feature
+
 
 #%% End

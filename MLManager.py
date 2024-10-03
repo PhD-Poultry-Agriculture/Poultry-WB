@@ -3,7 +3,7 @@ from scipy import stats
 import numpy as np
 import statsmodels.stats.multitest as smm
 from scipy.stats import ttest_ind
-
+import csv
 from DataManager import *
 
 
@@ -23,57 +23,57 @@ class MLManager:
         else:
             print("No data available for training.")
 
+    
     def evaluate_fdr(self):
-        # chickens_list = self.dataManager.get_medians_dataset()
-        # group_C = chickens_list[0]
-        # group_WB = chickens_list[1]
-        
-        # columns_count = len(group_C.columns)
-        # feature_p_values = []
-        
-        # for feature_index in range(1, columns_count):
-        #     feature_name = group_C.columns[feature_index]
-        #     control_distances = []
-        #     wb_distances = []
-
-        #     for timestamp in range(1, 4):
-        #         control_distances.append(abs(group_C.iloc[timestamp, feature_index] - group_C.iloc[timestamp + 1, feature_index]))
-        #         wb_distances.append(abs(group_WB.iloc[timestamp, feature_index] - group_WB.iloc[timestamp + 1, feature_index]))
-            
-        #     # Perform t-test only if there are enough data points
-        #     if len(control_distances) > 1 and len(wb_distances) > 1:
-        #         t_stat, p_value = stats.ttest_ind(control_distances, wb_distances)
-        #         feature_p_values.append((feature_name, p_value))  # Store feature name and its p-value
-        #     else:
-        #         feature_p_values.append((feature_name, np.nan))  # Append NaN if not enough data points
         feature_p_values = self.dataManager._create_permutations_distances()
-        print('test 02')
-        print(feature_p_values)
-        # feature_p_values.sort(key=lambda x: x[1])
-        sorted_feature_p_values = sorted(feature_p_values.items(), key=lambda x: x[1])
 
-        # Extract the sorted p-values for FDR correction
-       # Assuming feature_p_values is a dictionary where the key is the feature name and the value is the p-value
-        # Convert dictionary to a list of tuples (feature, p_value) and sort by p_value
         sorted_feature_p_values = sorted(feature_p_values.items(), key=lambda x: x[1])
-
-        # Extract only the p-values (sorted by feature)
         p_values = [x[1] for x in sorted_feature_p_values]
 
-        # Apply FDR correction (False Discovery Rate)
-        reject, pvals_corrected, _, _ = smm.multipletests(p_values, alpha=0.3, method='fdr_bh')
-        print('test 02.aa')
+        methods = [
+            'bonferroni', 'sidak', 'holm-sidak', 'holm', 'simes-hochberg', 'hommel', 
+            'fdr_bh', 'fdr_by', 'fdr_tsbh', 'fdr_tsbky'
+        ]
+        
+        # Dictionary to track if a feature is significant across all methods
+        feature_agreement = {feature[0]: True for feature in sorted_feature_p_values}
 
-        # Print the original sorted feature-wise p-values
-        print("Feature-wise P-values before correction (sorted):", sorted_feature_p_values)
+        for method in methods:
+            reject, pvals_corrected, _, _ = smm.multipletests(p_values, alpha=0.1, method=method)
 
-        # Print the results of FDR correction
-        print("Reject the null hypothesis (FDR corrected):", reject)
-        print("Corrected p-values:", pvals_corrected)
+            with open(f'Data/fdr_results_{method}.csv', mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Feature', 'Original P-value', 'Corrected P-value', 'Significant'])
 
-        # Optionally, print or return the significant features that were not rejected by FDR correction
-        significant_features = [sorted_feature_p_values[i][0] for i in range(len(reject)) if not reject[i]]
-        print("Significant features after FDR correction:", significant_features)
+                for i in range(len(sorted_feature_p_values)):
+                    feature_name = sorted_feature_p_values[i][0]
+                    original_p_value = sorted_feature_p_values[i][1]
+                    corrected_p_value = pvals_corrected[i]
+                    is_significant = reject[i]
+                    
+                    writer.writerow([feature_name, original_p_value, corrected_p_value, 'Yes' if is_significant else 'No'])
+
+                    # If any method rejects a feature, it won't be significant for all methods
+                    if not is_significant:
+                        feature_agreement[feature_name] = False
+
+            print(f"Results saved to 'fdr_results_{method}.csv'")
+
+        # Collect features that are significant in all methods
+        agreed_significant_features = [feature for feature, agreed in feature_agreement.items() if agreed]
+
+        # Save the features agreed upon by all methods in a final result file
+        with open('Data/fdr_results_agreed_features.csv', mode='w', newline='') as final_file:
+            writer = csv.writer(final_file)
+            writer.writerow(['Feature'])
+
+            for feature in agreed_significant_features:
+                writer.writerow([feature])
+
+        print("Features agreed upon by all methods:", agreed_significant_features)
+        print("Results saved to 'fdr_results_agreed_features.csv'")
+
+        return agreed_significant_features
 
 
     def evaluate_model(self):

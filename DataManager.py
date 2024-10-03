@@ -4,6 +4,7 @@ from enum import Enum
 import matplotlib.pyplot as plt
 from itertools import permutations
 from itertools import combinations
+from concurrent.futures import ThreadPoolExecutor
 
 class RossGroups(Enum):
     CONTROL = 'Control'
@@ -154,17 +155,17 @@ class DataManager:
         median_table.iloc[:, 1:] = median_values
 
         return median_table
-
     
     def generate_combinations(self, n):
-        all_combinations = list(combinations(range(1, n+1), n//2))
-        
+        all_combinations = list(combinations(range(1, n + 1), n // 2))
+
         valid_combinations = []
         
         for comb in all_combinations:
             group1 = list(comb)
-            group2 = [x for x in range(1, n+1) if x not in group1]            
-            valid_combinations.append((group1, group2))
+            group2 = [x for x in range(1, n + 1) if x not in group1]
+            if group1 < group2:
+                valid_combinations.append((group1, group2))
         
         return valid_combinations
 
@@ -230,4 +231,5 @@ class DataManager:
         for index in range(0, features_count):
             p_value_per_feature[columns[index]] = p_values[index]
         return p_value_per_feature
+
 #%% End

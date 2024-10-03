@@ -4,7 +4,7 @@ from enum import Enum
 import matplotlib.pyplot as plt
 from itertools import permutations
 from itertools import combinations
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class RossGroups(Enum):
     CONTROL = 'Control'
@@ -150,9 +150,18 @@ class DataManager:
         return distances_per_feature
 
     def _process_group_median(self, group):
-        median_values = np.median([chicken.values[:, 1:] for chicken in group], axis=0)
-        median_table = group[0].copy()
-        median_table.iloc[:, 1:] = median_values
+        # Assuming 'group' is a list of DataFrames where each DataFrame represents one chicken's data
+        # Concatenate all DataFrames into a single 3D NumPy array (rows x cols x chickens)
+        data_stack = np.dstack([chicken.values for chicken in group])
+
+        # Calculate the median across the third dimension (the chicken axis) for each [i, j] position
+        median_values = np.median(data_stack, axis=2)
+
+        # Create a DataFrame for the median values, preserving the original structure
+        median_table = pd.DataFrame(median_values, index=group[0].index, columns=group[0].columns)
+
+        # Ensure that the ID column (first column) is preserved from the original DataFrame
+        median_table.iloc[:, 0] = group[0].iloc[:, 0]
 
         return median_table
     
@@ -170,7 +179,6 @@ class DataManager:
         return valid_combinations
 
     def _create_permutations_distances(self):
-        groud_truth_distances = self._distance_between_two_groups(self.data_groups[RossGroups.CONTROL]['C-median'], self.data_groups[RossGroups.WIDE_BREAST]['WB-median'])
         features_count = len(self.data_groups[RossGroups.CONTROL]['C-median'].columns)-1
         count_agreements_GT = [0]*features_count
         chicks_by_index = {}
@@ -214,7 +222,7 @@ class DataManager:
                     self._process_group_median(group_B)
                 )
             )
-
+        groud_truth_distances = all_features_distances[0]
         all_features_distances = all_features_distances[1:]
 
         for distance_vector in all_features_distances:

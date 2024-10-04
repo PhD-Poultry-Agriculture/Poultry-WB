@@ -36,7 +36,7 @@ class DataManager:
             df_T.columns = df_T.iloc[0]
             df_T.index.name = 'Timestamp'
             df_T = df_T.drop(df_T.index[0])
-            self._FEATURE_CNT = len(df_T.columns)-1
+            self._FEATURE_CNT = len(df_T.columns)
             self.FEATURE_LST = df_T.columns.tolist()
             self._process_group(df_T, RossGroups.CONTROL)
             self._process_group(df_T, RossGroups.WIDE_BREAST)
@@ -80,38 +80,7 @@ class DataManager:
         if columns:
             df[columns] = df[columns].apply(lambda row: (row - row.mean()) / row.std(), axis=1)
         return df
-
-    def _process_group(self, df_T, group_name):
-        for index in range(1, self.CHICKENS_PER_GROUP + 1):
-            control_index = group_name.value + str(index)
-            
-            df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]            
-            df_T_filtered.index = df_T_filtered.index.str[:2]
-
-            print(f"\nProcessing control index: {control_index}")
-            print(f"Filtered DataFrame for {control_index}:\n{df_T_filtered}")
-            
-            self.data_groups[group_name][control_index] = df_T_filtered
-
-
-    def _distance_between_two_groups(self, df_group1, df_group2):
-        features_count = len(df_group1.columns)
-        distances_per_feature = []
-        for feature in range(1, features_count):
-            total_distance_per_feature = 0
-            for index_Ti in range(1, self.TIMESTAMPS):
-                total_distance_per_feature += abs(df_group1.iloc[index_Ti, feature] - df_group2.iloc[index_Ti, feature])
-            distances_per_feature.append(total_distance_per_feature)
-        return distances_per_feature
-
-    def _process_group_median(self, group):
-        data_stack = np.dstack([chicken.values for chicken in group])
-        median_values = np.median(data_stack, axis=2)
-        median_table = pd.DataFrame(median_values, index=group[0].index, columns=group[0].columns)
-        median_table.iloc[:, 0] = group[0].iloc[:, 0]
-
-        return median_table
-    
+   
     def generate_combinations(self, n):
         all_combinations = list(combinations(range(1, n + 1), n // 2))
 
@@ -124,16 +93,47 @@ class DataManager:
                 valid_combinations.append((group1, group2))
         
         return valid_combinations
+    
+    def _process_group(self, df_T, group_name):
+        for index in range(1, self.CHICKENS_PER_GROUP + 1):
+            control_index = group_name.value + str(index)
+
+            df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]
+            df_T_filtered.index = df_T_filtered.index.str[:2]
+
+            print(f"\nProcessing control index: {control_index}")
+            print(f"Filtered DataFrame for {control_index}:\n{df_T_filtered}")
+
+            self.data_groups[group_name][control_index] = df_T_filtered
+
+
+    def _distance_between_two_groups(self, df_group1, df_group2):
+        # Calculate absolute median differences instead of total distances
+        median_group1 = df_group1.median(axis=0)
+        median_group2 = df_group2.median(axis=0)
+        distances_per_feature = abs(median_group1 - median_group2)  # Calculate absolute differences
+        return distances_per_feature.tolist()  # Return as a list
+
+
+    def _process_group_median(self, group):
+        # Calculate the median for the group
+        data_stack = np.dstack([chicken.values for chicken in group])
+        median_values = np.median(data_stack, axis=2)
+        median_table = pd.DataFrame(median_values, index=group[0].index, columns=group[0].columns)
+        median_table.iloc[:, 0] = group[0].iloc[:, 0]
+
+        return median_table
+
 
     def _create_permutations_distances(self):
         count_agreements_GT = [0] * self._FEATURE_CNT
         chicks_by_index = {}
-    
+
         # Populate chicks_by_index dictionary
         for index in range(1, self.CHICKENS_PER_GROUP + 1):
             current_key_C = RossGroups.CONTROL.value + str(index)
             current_key_WB = RossGroups.WIDE_BREAST.value + str(index)
-            
+
             if current_key_C in self.data_groups[RossGroups.CONTROL]:
                 indexon = str(index)
                 chicks_by_index[indexon] = self.data_groups[RossGroups.CONTROL][current_key_C]
@@ -143,41 +143,23 @@ class DataManager:
 
         # Debug: Print the chicks_by_index dictionary
         print("Chicks by index:", chicks_by_index)
-        
-        n = self.CHICKENS_PER_GROUP * 2  
+
+        n = self.CHICKENS_PER_GROUP * 2
         combinations_list = self.generate_combinations(n)
         all_features_distances = []
-        
+        # combinations_list = combinations_list[0:50]
         print('Total combinations:', len(combinations_list))
-        
+
         for idx, combination in enumerate(combinations_list):
-            print(f"Processing combination {idx+1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
+            print(f"Processing combination {idx + 1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
 
             tuple_group_A = combination[0]
             tuple_group_B = combination[1]
 
-            group_A = []
-            group_B = []
-            
-            for value in tuple_group_A:
-                try:
-                    df = chicks_by_index[str(value)]
-                except KeyError:
-                    print(f"KeyError: {value} not found in chicks_by_index")
-                    raise  # Re-raise the exception after printing
+            group_A = [chicks_by_index[str(value)] for value in tuple_group_A]
+            group_B = [chicks_by_index[str(value)] for value in tuple_group_B]
 
-                group_A.append(df)
-
-            for value in tuple_group_B:
-                try:
-                    df = chicks_by_index[str(value)]
-                except KeyError:
-                    print(f"KeyError: {value} not found in chicks_by_index")
-                    raise  # Re-raise the exception after printing
-
-                group_B.append(df)
-
-            # Compute distance between the two groups
+            # Compute distance between the two groups using median differences
             all_features_distances.append(
                 self._distance_between_two_groups(
                     self._process_group_median(group_A),
@@ -194,11 +176,12 @@ class DataManager:
 
         # Initialize count_agreements_GT
         count_agreements_GT = [0] * self._FEATURE_CNT
-
         # Process each distance vector and compare with ground truth
         for distance_vector in all_features_distances:
             for feature_index, distance_value in enumerate(distance_vector):
+                # print('list size: ', count_agreements_GT, 'then', feature_index)
                 if distance_value > ground_truth_distances[feature_index]:
+                    # print('size: ', len(count_agreements_GT))
                     count_agreements_GT[feature_index] += 1
 
         # Compute p-values as the proportion of agreements over the total number of permutations

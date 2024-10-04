@@ -40,7 +40,7 @@ class DataManager:
             self.FEATURE_LST = df_T.columns.tolist()
             self._process_group(df_T, RossGroups.CONTROL)
             self._process_group(df_T, RossGroups.WIDE_BREAST)
-                        
+            
             # self.plot_average_tables(column_name='GLUTAMATE',key='median')
         else:
             print("No data to preprocess.")
@@ -82,35 +82,17 @@ class DataManager:
         return df
 
     def _process_group(self, df_T, group_name):
-        avg_table = pd.DataFrame()
-
-        for index in range(1, self.CHICKENS_PER_GROUP+1):
+        for index in range(1, self.CHICKENS_PER_GROUP + 1):
             control_index = group_name.value + str(index)
-            df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]
             
+            df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]            
             df_T_filtered.index = df_T_filtered.index.str[:2]
 
-            mean_row = df_T_filtered.mean().to_frame().T
+            print(f"\nProcessing control index: {control_index}")
+            print(f"Filtered DataFrame for {control_index}:\n{df_T_filtered}")
+            
+            self.data_groups[group_name][control_index] = df_T_filtered
 
-            mean_row.index = ['Average']
-
-            df_with_stats = pd.concat([df_T_filtered, mean_row])
-            self.data_groups[group_name][control_index] = df_with_stats
-
-            if avg_table.empty:
-                avg_table = df_T_filtered
-            else:
-                avg_table += df_T_filtered
-
-        avg_table /= self.CHICKENS_PER_GROUP
-        avg_table.index = df_T_filtered.index
-
-        avg_mean_row = avg_table.mean().to_frame().T
-        avg_mean_row.index = ['Overall Average']
-
-        avg_table_with_stats = pd.concat([avg_table, avg_mean_row])
-
-        self.data_groups[group_name.value + '-avg'] = avg_table_with_stats
 
     def _distance_between_two_groups(self, df_group1, df_group2):
         features_count = len(df_group1.columns)
@@ -203,24 +185,29 @@ class DataManager:
                 )
             )
 
-        groud_truth_distances = all_features_distances[0]
+        # Ensure that the list is not empty before proceeding
+        if len(all_features_distances) == 0:
+            raise ValueError("No distances were calculated.")
+
+        ground_truth_distances = all_features_distances[0]
         all_features_distances = all_features_distances[1:]
 
+        # Initialize count_agreements_GT
+        count_agreements_GT = [0] * self._FEATURE_CNT
+
+        # Process each distance vector and compare with ground truth
         for distance_vector in all_features_distances:
-            feature_index = 0
-            for distance_value in distance_vector:
-                if distance_value > groud_truth_distances[feature_index]:
+            for feature_index, distance_value in enumerate(distance_vector):
+                if distance_value > ground_truth_distances[feature_index]:
                     count_agreements_GT[feature_index] += 1
-                feature_index += 1
-        
-        # Compute p-values regarding source-of-truth
+
+        # Compute p-values as the proportion of agreements over the total number of permutations
         p_value_per_feature = {}
-        p_values = [agreements / self._FEATURE_CNT for agreements in count_agreements_GT]
-        
-        for index in range(0, self._FEATURE_CNT):
-            p_value_per_feature[self.FEATURE_LST[index]] = p_values[index]
-        
+        for feature_index in range(self._FEATURE_CNT):
+            p_value_per_feature[self.FEATURE_LST[feature_index]] = count_agreements_GT[feature_index] / len(all_features_distances)
+
         return p_value_per_feature
+
 
 
 #%% End

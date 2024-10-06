@@ -101,15 +101,22 @@ class DataManager:
             df_T_filtered = df_T[df_T.index.str.contains(control_index, na=False)]
             df_T_filtered.index = df_T_filtered.index.str[:2]
 
-            print(f"\nProcessing control index: {control_index}")
-            print(f"Filtered DataFrame for {control_index}:\n{df_T_filtered}")
+            # print(f"\nProcessing control index: {control_index}")
+            # print(f"Filtered DataFrame for {control_index}:\n{df_T_filtered}")
 
             self.data_groups[group_name][control_index] = df_T_filtered
 
-
     def _distance_between_two_groups(self, df_group1, df_group2):
-        differences = abs(df_group1.iloc[1:] - df_group2.iloc[1:])
-        distances_per_feature = differences.iloc[:, 1:].sum(axis=0)
+        # print(df_group1['2-Isopropylmalic acid'].head())
+        # print(df_group2['2-Isopropylmalic acid'].head())
+        # differences = abs(df_group1 - df_group2)
+        differences = df_group1 - df_group2
+        # print('differences')
+        # print(differences['2-Isopropylmalic acid'])
+        distances_per_feature = abs(differences.iloc[:, 1:].sum(axis=0))
+        # print('distance median: ')
+        # lst = distances_per_feature.tolist()
+        # print(lst)
         return distances_per_feature.tolist()
 
     def _process_group_median(self, group):
@@ -118,7 +125,7 @@ class DataManager:
         median_values = np.median(data_stack, axis=2)
         median_table = pd.DataFrame(median_values, index=group[0].index, columns=group[0].columns)
         median_table.iloc[:, 0] = group[0].iloc[:, 0]
-
+        # print(median_table['2-Isopropylmalic acid'].head()) # This is excellent
         return median_table
 
 
@@ -139,14 +146,13 @@ class DataManager:
                 chicks_by_index[str(index + self.CHICKENS_PER_GROUP)] = self.data_groups[RossGroups.WIDE_BREAST][current_key_WB]
 
         # Debug: Print the chicks_by_index dictionary
-        print("Chicks by index:", chicks_by_index)
+        # print("Chicks by index:", chicks_by_index)
 
         n = self.CHICKENS_PER_GROUP * 2
         combinations_list = self.generate_combinations(n)
         all_features_distances = []
-        # combinations_list = combinations_list[0:50]
         print('Total combinations:', len(combinations_list))
-
+        # combinations_list = combinations_list[0:1]
         for idx, combination in enumerate(combinations_list):
             print(f"Processing combination {idx + 1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
 
@@ -155,7 +161,7 @@ class DataManager:
 
             group_A = [chicks_by_index[str(value)] for value in tuple_group_A]
             group_B = [chicks_by_index[str(value)] for value in tuple_group_B]
-
+            
             # Compute distance between the two groups using median differences
             all_features_distances.append(
                 self._distance_between_two_groups(

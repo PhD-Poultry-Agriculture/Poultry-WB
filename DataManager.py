@@ -108,12 +108,9 @@ class DataManager:
 
 
     def _distance_between_two_groups(self, df_group1, df_group2):
-        # Calculate absolute median differences instead of total distances
-        median_group1 = df_group1.median(axis=0)
-        median_group2 = df_group2.median(axis=0)
-        distances_per_feature = abs(median_group1 - median_group2)  # Calculate absolute differences
-        return distances_per_feature.tolist()  # Return as a list
-
+        differences = abs(df_group1.iloc[1:] - df_group2.iloc[1:])
+        distances_per_feature = differences.iloc[:, 1:].sum(axis=0)
+        return distances_per_feature.tolist()
 
     def _process_group_median(self, group):
         # Calculate the median for the group

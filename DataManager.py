@@ -38,6 +38,7 @@ class DataManager:
             df_T = df_T.drop(df_T.index[0])
             self._FEATURE_CNT = len(df_T.columns)
             self.FEATURE_LST = df_T.columns.tolist()
+            print(self.FEATURE_LST)
             self._process_group(df_T, RossGroups.CONTROL)
             self._process_group(df_T, RossGroups.WIDE_BREAST)
             
@@ -107,17 +108,17 @@ class DataManager:
             self.data_groups[group_name][control_index] = df_T_filtered
 
     def _distance_between_two_groups(self, df_group1, df_group2):
-        # print(df_group1['2-Isopropylmalic acid'].head())
-        # print(df_group2['2-Isopropylmalic acid'].head())
-        # differences = abs(df_group1 - df_group2)
+        # Calculate the differences between the two dataframes
         differences = df_group1 - df_group2
-        # print('differences')
-        # print(differences['2-Isopropylmalic acid'])
-        distances_per_feature = abs(differences.iloc[:, 1:].sum(axis=0))
-        # print('distance median: ')
-        # lst = distances_per_feature.tolist()
-        # print(lst)
+        
+        # Calculate the sum of absolute differences for each feature
+        distances_per_feature = abs(differences).sum(axis=0)
+        # print('my test')
+        # print(df_group1.head())
+        # print(df_group2.head())        
+
         return distances_per_feature.tolist()
+
 
     def _process_group_median(self, group):
         # Calculate the median for the group
@@ -152,7 +153,7 @@ class DataManager:
         combinations_list = self.generate_combinations(n)
         all_features_distances = []
         print('Total combinations:', len(combinations_list))
-        # combinations_list = combinations_list[0:1]
+        # combinations_list = combinations_list[0:500]
         for idx, combination in enumerate(combinations_list):
             print(f"Processing combination {idx + 1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
 
@@ -188,11 +189,17 @@ class DataManager:
                     count_agreements_GT[feature_index] += 1
 
         # Compute p-values as the proportion of agreements over the total number of permutations
-        p_value_per_feature = {}
+        print('combinations_list')
+        print(len(combinations_list))
+        # p_value_per_feature = {}
+        # for feature_index in range(self._FEATURE_CNT):
+        #     p_value_per_feature[self.FEATURE_LST[feature_index]] = count_agreements_GT[feature_index] / len(combinations_list)
+        p_values = []
         for feature_index in range(self._FEATURE_CNT):
-            p_value_per_feature[self.FEATURE_LST[feature_index]] = count_agreements_GT[feature_index] / len(all_features_distances)
-
-        return p_value_per_feature
+            p_values.append(count_agreements_GT[feature_index] / len(combinations_list))
+        print('p-values')
+        print(len(p_values))
+        return p_values
 
 
 

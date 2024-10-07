@@ -1,6 +1,6 @@
 # predicts the correct score of WB
 # 8 control animals(per time point) 8 WB: 16 (8, 8) for tp1, 16 for tp2,..16 for tp4
-
+#%%
 def getline(animalnum, arr): # for a give animal gets all the assosiated markers values, t1-t4
     lst0 = arr.tolist()
     animaldata = []
@@ -66,7 +66,7 @@ print(len(animals0), len(animals0[0]), len(animals0[1])) # 16 108 108
 print(animals0[1][0], arr0t[1,0]) # 12341236.63 12341236.63
 print(animals0[1][27], arr0t[17,0]) # 4200985.092 4200985.092 - yey!
 
-# add 0 as control group and 1 as WB
+#%% add 0 as control group and 1 as WB
 gpcont = [0] * 8
 gpwb = [1] * 8
 gptot = gpcont + gpwb

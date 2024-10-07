@@ -25,11 +25,15 @@ class MLManager:
 
     def evaluate_fdr(self):
         feature_p_values = self.dataManager._create_permutations_distances()
-        methods = [
-            'bonferroni', 'sidak', 'holm-sidak', 'holm', 'simes-hochberg', 'hommel', 
-            'fdr_bh', 'fdr_by', 'fdr_tsbh', 'fdr_tsbky'
-        ]
-
+        
+        print('feature_p_values')
+        print(feature_p_values)
+        # methods = [
+        #     'bonferroni', 'sidak', 'holm-sidak', 'holm', 'simes-hochberg', 'hommel', 
+        #     'fdr_bh', 'fdr_by', 'fdr_tsbh', 'fdr_tsbky'
+        # ]
+        methods = ['fdr_bh']
+        
         for method in methods:
             fdr_results = smm.multipletests(feature_p_values, alpha=0.1, method=method, is_sorted=False, returnsorted=False)
             

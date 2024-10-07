@@ -36,6 +36,9 @@ class DataManager:
             df_T.columns = df_T.iloc[0]
             df_T.index.name = 'Timestamp'
             df_T = df_T.drop(df_T.index[0])
+            # df_T = df_T[['2,3-DIHYDROXYBENZOATE']]
+            # df_T = df_T[['ADENINE']]
+            # df_T = df_T[['HEXANOATE']]
             self._FEATURE_CNT = len(df_T.columns)
             self.FEATURE_LST = df_T.columns.tolist()
             print(self.FEATURE_LST)
@@ -112,7 +115,7 @@ class DataManager:
         differences = df_group1 - df_group2
         
         # Calculate the sum of absolute differences for each feature
-        distances_per_feature = abs(differences).sum(axis=0)
+        distances_per_feature = abs(differences.sum(axis=0))
         # print('my test')
         # print(df_group1.head())
         # print(df_group2.head())        
@@ -125,8 +128,8 @@ class DataManager:
         data_stack = np.dstack([chicken.values for chicken in group])
         median_values = np.median(data_stack, axis=2)
         median_table = pd.DataFrame(median_values, index=group[0].index, columns=group[0].columns)
-        median_table.iloc[:, 0] = group[0].iloc[:, 0]
-        # print(median_table['2-Isopropylmalic acid'].head()) # This is excellent
+        # median_table.iloc[:, 0] = group[0].iloc[:, 0]
+        # print(median_table.head())
         return median_table
 
 
@@ -153,13 +156,12 @@ class DataManager:
         combinations_list = self.generate_combinations(n)
         all_features_distances = []
         print('Total combinations:', len(combinations_list))
-        # combinations_list = combinations_list[0:100]
+        # combinations_list = combinations_list[0:1000]
         for idx, combination in enumerate(combinations_list):
             print(f"Processing combination {idx + 1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
 
             tuple_group_A = combination[0]
-            tuple_group_B = combination[1]
-
+            tuple_group_B = combination[1]            
             group_A = [chicks_by_index[str(value)] for value in tuple_group_A]
             group_B = [chicks_by_index[str(value)] for value in tuple_group_B]
             
@@ -176,7 +178,7 @@ class DataManager:
             raise ValueError("No distances were calculated.")
 
         ground_truth_distances = all_features_distances[0]
-        all_features_distances = all_features_distances[1:]
+        # all_features_distances = all_features_distances[1:]
 
         # Initialize count_agreements_GT
         count_agreements_GT = [0] * self._FEATURE_CNT
@@ -191,9 +193,7 @@ class DataManager:
         # Compute p-values as the proportion of agreements over the total number of permutations
         print('combinations_list')
         print(len(combinations_list))
-        # p_value_per_feature = {}
-        # for feature_index in range(self._FEATURE_CNT):
-        #     p_value_per_feature[self.FEATURE_LST[feature_index]] = count_agreements_GT[feature_index] / len(combinations_list)
+        
         p_values = []
         for feature_index in range(self._FEATURE_CNT):
             p_values.append(count_agreements_GT[feature_index] / len(combinations_list))

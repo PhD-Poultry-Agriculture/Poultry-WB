@@ -18,7 +18,7 @@ def extracttp(tp, lst): # extracts the tp (0,1,2 or 3) from the total list of an
        tmp = ii[tp]
        timepoint0 = timepoint0 + [tmp]
     return timepoint0
-# tets 
+
 
 def calcmedian(lst): # calculates the median of al markers over the 8 animals cohort (cont/WB) for a specific time point (tp)
     arrtp = np.array(lst) # every row is an animal, every column feature

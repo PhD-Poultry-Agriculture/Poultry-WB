@@ -21,34 +21,88 @@ class DataManager:
             RossGroups.WIDE_BREAST : {}
         }
         self.FEATURE_LST = []
+        self.selected_features = [
+            "ADENINE",
+            "ADENOSINE",
+            "ASPARTATE",
+            "Leu-Ala",
+            "Leu-Gly",
+            "Pseudouridine",
+            "GLUTAMATE",
+            "L-Methionine sulfoxide",
+            "TREHALOSE",
+            "PROLINE",
+            "ALLANTOIN",
+            "4-Hydroxyphenylacetic acid",
+            "CYSTATHIONINE",
+            "Dehydroascorbic acid",
+            "Leucine",
+            "PYROGLUTAMATE",
+            "ASPARAGINE",
+            "CREATINE",
+            "DIACETYL",
+            "D-MANNOSAMINE",
+            "2-Isopropylmalic acid",
+            "2-OXOADIPATE",
+            "3-Methyl-L-histidine",
+            "GLYCEROL",
+            "SERINE",
+            "Homocitrulline",
+            "Saccharic acid 1,4-lactone",
+            "NORLEUCINE"
+        ]
         self._preprocess()
+
 
     def _preprocess(self):
         if self.data is not None:
             print("Preprocessing data...")
             
             df_z_scaled = self.data.copy()            
-            # df_z_scaled = self._normalize(df_z_scaled, 'C')
-            # df_z_scaled = self._normalize(df_z_scaled, 'B')
-
+            
             df_z_scaled = df_z_scaled.drop(['Tags', 'Formula'], axis=1)
             df_T = df_z_scaled.T
             df_T.columns = df_T.iloc[0]
             df_T.index.name = 'Timestamp'
             df_T = df_T.drop(df_T.index[0])
-            # df_T = df_T[['2,3-DIHYDROXYBENZOATE']]
-            # df_T = df_T[['ADENINE']]
-            # df_T = df_T[['HEXANOATE']]
+            
             self._FEATURE_CNT = len(df_T.columns)
             self.FEATURE_LST = df_T.columns.tolist()
-            print(self.FEATURE_LST)
+            # print(self.FEATURE_LST)
             self._process_group(df_T, RossGroups.CONTROL)
             self._process_group(df_T, RossGroups.WIDE_BREAST)
             
-            # self.plot_average_tables(column_name='GLUTAMATE',key='median')
+            
         else:
             print("No data to preprocess.")
     
+    def _process_4_random_forest(self):
+        results = []
+        for index in range(1, self.CHICKENS_PER_GROUP + 1):
+            control_index = RossGroups.CONTROL.value + str(index)        
+            control_chick = self.data_groups[RossGroups.CONTROL][control_index]
+            df_filtered = control_chick[control_chick.columns.intersection(self.selected_features)]
+            single_row_chick = df_filtered.values.flatten()
+            result_row_with_zero = np.append(single_row_chick, 0)
+            results.append(result_row_with_zero)
+            # print(f"CONTROL chick processed: {result_row_with_zero}")  # Debug print
+
+        for index in range(1, self.CHICKENS_PER_GROUP + 1):
+            control_index = RossGroups.WIDE_BREAST.value + str(index)        
+            control_chick = self.data_groups[RossGroups.WIDE_BREAST][control_index]
+            df_filtered = control_chick[control_chick.columns.intersection(self.selected_features)]
+            single_row_chick = df_filtered.values.flatten()
+            result_row_with_one = np.append(single_row_chick, 1)
+            results.append(result_row_with_one)
+            # print(f"WIDE_BREAST chick processed: {result_row_with_one}")  # Debug print
+
+        final_df = pd.DataFrame(results)
+        # print(f"Final DataFrame shape: {final_df.shape}")  # Debug print
+        # print(f"Final DataFrame:\n{final_df.head()}")  # Debug print
+        # print(f"Final DataFrame:\n{final_df.tail()}")  # Debug print
+
+        return final_df
+
     def plot_average_tables(self, column_name=None, key='median'):
         avg_control = self.data_groups[RossGroups.CONTROL]['C-'+key]
         avg_wide_breast = self.data_groups[RossGroups.WIDE_BREAST]['WB-'+key]

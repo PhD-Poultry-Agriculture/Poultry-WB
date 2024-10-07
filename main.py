@@ -19,7 +19,8 @@ def main():
     data_manager = DataManager(raw_data)
     ml_manager = MLManager(data_manager)
     
-    ml_manager.evaluate_fdr()
+    # ml_manager.evaluate_fdr()
+    ml_manager.evaluate_random_forest_model()
     
     end_time = time.time()
     total_time = end_time - start_time

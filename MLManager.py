@@ -1,11 +1,34 @@
 import pandas as pd
 from scipy import stats
-import numpy as np
 import statsmodels.stats.multitest as smm
 from scipy.stats import ttest_ind
 import csv
 from DataManager import *
+from scipy.stats import pearsonr
+from scipy.stats import spearmanr
+import matplotlib.pyplot as plt
+from sklearn import metrics
+import statistics
+import numpy.random
+from sklearn import model_selection
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import Lasso
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import cross_validate
+from sklearn import datasets
+from sklearn.model_selection import KFold
+import math
+from sklearn.model_selection import LeaveOneOut
 
+# from sklearn.metrics import plot_confusion_matrix
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 class MLManager:
     
@@ -70,22 +93,72 @@ class MLManager:
 
         return significant_features
 
-    def evaluate_model(self):
-        chickens_list = self.dataManager.get_medians_dataset()
-        group_C = chickens_list[0]
-        group_WB = chickens_list[1]
-        max_distances = {}
-        columns_count = len(group_C.columns)-1
-        
-        for cell_index in range(1, columns_count):
-            for timestamp in range(1, 4):
-                distance_Ti = 0
-                distance_Ti += abs(group_C.iloc[timestamp, cell_index] - group_WB.iloc[timestamp, cell_index])
-            current_column_key = group_C.columns[cell_index]
-            max_distances[current_column_key] = distance_Ti/4
-        
-        for key in sorted(max_distances, key=max_distances.get, reverse=True):
-            print(str(key) + ' : ' + str(max_distances[key]))
+    def evaluate_random_forest_model(self):
+        processed_df = self.dataManager._process_4_random_forest()
+        rand_state = 2
+        X = processed_df.iloc[:, :-1].values
+        Y = processed_df.iloc[:, -1].values
+
+        cvout = LeaveOneOut()
+
+        y_true, y_pred = list(), list()
+        for train_ix, test_ix in cvout.split(X):
+            X_train, X_test = X[train_ix, :], X[test_ix, :]
+            y_train, y_test = Y[train_ix], Y[test_ix]
+
+            classifier = RandomForestClassifier(random_state=rand_state)
+            classifier.fit(X_train, y_train)
+            yhat = classifier.predict(X_test)
+
+            y_true.append(y_test[0])
+            y_pred.append(yhat[0])
+
+        acc = accuracy_score(y_true, y_pred)
+        print('Accuracy: %.3f' % acc)
+        print('True labels:', y_true)
+        print('Predictions:', y_pred)
+
+        cnfmtrx = confusion_matrix(y_true, y_pred)
+        print('Confusion Matrix:\n', cnfmtrx)
+
+        cm = confusion_matrix(y_true, y_pred, labels=classifier.classes_)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classifier.classes_)
+        disp.plot()
+        plt.show()
+
+        permlabels = np.random.permutation(Y)
+        print('Permuted labels:', permlabels)
+
+        X_perm = np.hstack((X, permlabels.reshape(-1, 1)))
+
+        y1_true, y1_pred = list(), list()
+        for train_ix, test_ix in cvout.split(X_perm):
+            X1_train, X1_test = X_perm[train_ix, :], X_perm[test_ix, :]
+            y1_train, y1_test = permlabels[train_ix], permlabels[test_ix]
+
+            classifier = RandomForestClassifier(random_state=rand_state)
+            classifier.fit(X1_train, y1_train)
+            y1hat = classifier.predict(X1_test)
+
+            y1_true.append(y1_test[0])
+            y1_pred.append(y1hat[0])
+
+        acc1 = accuracy_score(y1_true, y1_pred)
+        print('Accuracy with permuted labels: %.3f' % acc1)
+        print('True labels (permuted):', y1_true)
+        print('Predictions (permuted):', y1_pred)
+
+        cnfmtrx_perm = confusion_matrix(y1_true, y1_pred)
+        print('Confusion Matrix (Permuted):\n', cnfmtrx_perm)
+
+        cm_perm = confusion_matrix(y1_true, y1_pred, labels=classifier.classes_)
+        disp_perm = ConfusionMatrixDisplay(confusion_matrix=cm_perm, display_labels=classifier.classes_)
+        disp_perm.plot()
+        plt.show()
+
+
+
+
 
     def save_model(self, file_path):
         """

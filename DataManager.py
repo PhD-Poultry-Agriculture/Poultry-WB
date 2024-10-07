@@ -153,7 +153,7 @@ class DataManager:
         combinations_list = self.generate_combinations(n)
         all_features_distances = []
         print('Total combinations:', len(combinations_list))
-        # combinations_list = combinations_list[0:500]
+        # combinations_list = combinations_list[0:100]
         for idx, combination in enumerate(combinations_list):
             print(f"Processing combination {idx + 1}/{len(combinations_list)}: Group A: {combination[0]}, Group B: {combination[1]}")
 

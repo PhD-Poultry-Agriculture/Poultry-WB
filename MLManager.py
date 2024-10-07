@@ -23,68 +23,48 @@ class MLManager:
         else:
             print("No data available for training.")
 
-    
     def evaluate_fdr(self):
         feature_p_values = self.dataManager._create_permutations_distances()
-        print('p-values before fixation: ', feature_p_values[:30])
-        # sorted_feature_p_values = sorted(feature_p_values.items(), key=lambda x: x[1])
-        # p_values = [x[1] for x in sorted_feature_p_values]
-
-        # methods = [
-        #     'bonferroni', 'sidak', 'holm-sidak', 'holm', 'simes-hochberg', 'hommel', 
-        #     'fdr_bh', 'fdr_by', 'fdr_tsbh', 'fdr_tsbky'
-        # ]
-        methods = ['fdr_bh']
-
-        # Dictionary to track if a feature is significant across all methods
-        # feature_agreement = {feature[0]: True for feature in sorted_feature_p_values}
+        methods = [
+            'bonferroni', 'sidak', 'holm-sidak', 'holm', 'simes-hochberg', 'hommel', 
+            'fdr_bh', 'fdr_by', 'fdr_tsbh', 'fdr_tsbky'
+        ]
 
         for method in methods:
-            # Perform the FDR correction
-            fdr0 = smm.multipletests(feature_p_values, alpha=0.1, method=method, is_sorted=False, returnsorted=False)
+            fdr_results = smm.multipletests(feature_p_values, alpha=0.1, method=method, is_sorted=False, returnsorted=False)
             
-            # Collect markers, with an indication of whether they passed (True) or not (False)
-            mrks = [f"{self.dataManager.FEATURE_LST[index]}|{index}|Passed: {passed}" for index, passed in enumerate(fdr0[0])]
-            
-            # Print each marker on a new line
+            mrks = [f"{self.dataManager.FEATURE_LST[index]}|{index}|Passed: {passed}" for index, passed in enumerate(fdr_results[0])]
             print("Final Markers with Status:")
             print("\n".join(mrks))
 
+            sorted_results = sorted(
+                [(self.dataManager.FEATURE_LST[index], feature_p_values[index], fdr_results[1][index], fdr_results[0][index]) 
+                for index in range(len(feature_p_values))],
+                key=lambda x: x[2]  # Sort by corrected p-value
+            )
 
-        #     with open(f'Data/fdr_results_{method}.csv', mode='w', newline='') as file:
-        #         writer = csv.writer(file)
-        #         writer.writerow(['Feature', 'Original P-value', 'Corrected P-value', 'Significant'])
+            with open(f'Data/fdr_results_{method}.csv', mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Feature', 'Original P-value', 'Corrected P-value', 'Significant'])
+                
+                for feature_name, original_p_value, corrected_p_value, is_significant in sorted_results:
+                    writer.writerow([feature_name, original_p_value, corrected_p_value, 'Yes' if is_significant else 'No'])
 
-        #         for i in range(len(sorted_feature_p_values)):
-        #             feature_name = sorted_feature_p_values[i][0]
-        #             original_p_value = sorted_feature_p_values[i][1]
-        #             corrected_p_value = pvals_corrected[i]
-        #             is_significant = reject[i]
-                    
-        #             writer.writerow([feature_name, original_p_value, corrected_p_value, 'Yes' if is_significant else 'No'])
+            print(f"Results saved to 'fdr_results_{method}.csv'")
 
-        #             # If any method rejects a feature, it won't be significant for all methods
-        #             if not is_significant:
-        #                 feature_agreement[feature_name] = False
+            significant_features = [feature_name for feature_name, original_p_value, corrected_p_value, is_significant 
+                                    in sorted_results if is_significant]
 
-        #     print(f"Results saved to 'fdr_results_{method}.csv'")
+            with open(f'Data/fdr_results_significant_features_{method}.csv', mode='w', newline='') as final_file:
+                writer = csv.writer(final_file)
+                writer.writerow(['Feature'])
+                for feature in significant_features:
+                    writer.writerow([feature])
 
-        # # Collect features that are significant in all methods
-        # agreed_significant_features = [feature for feature, agreed in feature_agreement.items() if agreed]
+            print(f"Significant features for {method}:", significant_features)
+            print(f"Results saved to 'fdr_results_significant_features_{method}.csv'")
 
-        # # Save the features agreed upon by all methods in a final result file
-        # with open('Data/fdr_results_agreed_features.csv', mode='w', newline='') as final_file:
-        #     writer = csv.writer(final_file)
-        #     writer.writerow(['Feature'])
-
-        #     for feature in agreed_significant_features:
-        #         writer.writerow([feature])
-
-        # print("Features agreed upon by all methods:", agreed_significant_features)
-        # print("Results saved to 'fdr_results_agreed_features.csv'")
-
-        # return agreed_significant_features
-
+        return significant_features
 
     def evaluate_model(self):
         chickens_list = self.dataManager.get_medians_dataset()

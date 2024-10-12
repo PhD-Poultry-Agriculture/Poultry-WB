@@ -213,7 +213,8 @@ print(timemeddiffarr[0:4,0], sumtimemeddiff[0])
 diffgreaterthanunpermute = [0]*234
 
 # for each feature will tell how many times (out of 100/500) the abs of sum of diff over 4 timepoints is greater than it initial, unpermuted atate
-for ii in range(0,500):
+perm_size = 8000
+for ii in range(0,perm_size):
     permchick = np.random.permutation(allchick0)
     timedataperm = []
     for ii in range(0, 4):
@@ -258,7 +259,7 @@ print(diffgreaterthanunpermute)
 # also, cont > WB at all time points, so it makes sense as a true marker
 
 # get the p-values
-permpval0 = [ii/500 for ii in diffgreaterthanunpermute]
+permpval0 = [ii/perm_size for ii in diffgreaterthanunpermute]
 # FDR
 markrscorrlst = fdrandmarkers(permpval0) # returns the list of markers numbers (starts with 1, not 0!) that passes the threshold (0.25).
 print(len(markrscorrlst)) # FDR 0.1 - 26
@@ -292,6 +293,7 @@ print(markrscorrlst)
 # [25, 29, 42, 48, 59, 60, 62, 74, 75, 86, 88, 94, 98, 102, 117, 121, 130, 143, 144, 145, 147, 189, 191, 194, 202, 205, 222]
 
 # generate a file with the markers values for later PCA use
+#%%
 arr0lst = arr0.tolist()
 markersnum = [25, 29, 42, 48, 59, 60, 62, 74, 75, 86, 88, 94, 98, 102, 117, 121, 130, 143, 144, 145, 147, 189, 191, 194, 202, 205, 222]
 markerslst = []

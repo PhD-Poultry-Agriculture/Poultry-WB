@@ -1,0 +1,260 @@
+Training with kernel_polynomial kernel...
+Polynomial Kernel: Computing with degree 2 on input of shape (2000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_polynomial kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Polynomial Kernel: Computing with degree 2 on input of shape (3000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 530, Total samples: 1000
+Accuracy: 0.53
+Evaluation completed.
+Polynomial Kernel (Degree 2) Accuracy: 0.53
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_polynomial kernel...
+Polynomial Kernel: Computing with degree 5 on input of shape (2000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_polynomial kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Polynomial Kernel: Computing with degree 5 on input of shape (3000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 530, Total samples: 1000
+Accuracy: 0.53
+Evaluation completed.
+Polynomial Kernel (Degree 5) Accuracy: 0.53
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_polynomial kernel...
+Polynomial Kernel: Computing with degree 10 on input of shape (2000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_polynomial kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Polynomial Kernel: Computing with degree 10 on input of shape (3000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 530, Total samples: 1000
+Accuracy: 0.53
+Evaluation completed.
+Polynomial Kernel (Degree 10) Accuracy: 0.53
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_polynomial kernel...
+Polynomial Kernel: Computing with degree 15 on input of shape (2000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_polynomial kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Polynomial Kernel: Computing with degree 15 on input of shape (3000, 2)
+Polynomial Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 530, Total samples: 1000
+Accuracy: 0.53
+Evaluation completed.
+Polynomial Kernel (Degree 15) Accuracy: 0.53
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.01 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (977, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.01 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 968, Total samples: 1000
+Accuracy: 0.968
+Evaluation completed.
+Gaussian Kernel (Sigma 0.01) Accuracy: 0.968
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.25 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: False
+Shape of A from adatron: (2001, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.25 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 981, Total samples: 1000
+Accuracy: 0.981
+Evaluation completed.
+Gaussian Kernel (Sigma 0.25) Accuracy: 0.981
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.5 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.5 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 537, Total samples: 1000
+Accuracy: 0.537
+Evaluation completed.
+Gaussian Kernel (Sigma 0.5) Accuracy: 0.537
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.75 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.75 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 530, Total samples: 1000
+Accuracy: 0.53
+Evaluation completed.
+Gaussian Kernel (Sigma 0.75) Accuracy: 0.53
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)
+------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 1.0 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: True
+Shape of A from adatron: (2, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 1.0 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 530, Total samples: 1000
+Accuracy: 0.53
+Evaluation completed.
+Gaussian Kernel (Sigma 1.0) Accuracy: 0.53
+Shapes of data arrays:
+X_train: (2000, 2)
+y_train: (2000,)
+X_test: (1000, 2)
+y_pred_test: (1000,)

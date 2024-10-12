@@ -1,0 +1,200 @@
+Trial 1, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 2, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 3, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 4, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 5, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 6, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 7, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 8, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 9, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 10, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 1, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 2, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 3, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 4, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 5, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 6, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 7, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 8, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 9, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 10, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 1, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 2, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 3, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 4, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 5, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 6, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 7, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 8, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 9, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 10, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 1, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 2, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 3, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 4, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 5, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 6, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 7, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 8, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 9, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]
+Trial 10, P=9
+Shape of X_train: (9, 10)
+Shape of K: (9, 9)
+Shape of y_train_reshaped: (9, 1)
+Unique values in y_train: [-1  1]

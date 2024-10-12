@@ -1,0 +1,119 @@
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.01 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: False
+Shape of A from adatron: (1001, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.01 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 978, Total samples: 1000
+Accuracy: 0.978
+Evaluation completed.
+Gaussian Kernel (Sigma 0.01) Accuracy: 0.978
+---------------------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.25 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: False
+Shape of A from adatron: (1001, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.25 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 988, Total samples: 1000
+Accuracy: 0.988
+Evaluation completed.
+Gaussian Kernel (Sigma 0.25) Accuracy: 0.988
+---------------------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.5 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: False
+Shape of A from adatron: (1001, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.5 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 960, Total samples: 1000
+Accuracy: 0.96
+Evaluation completed.
+Gaussian Kernel (Sigma 0.5) Accuracy: 0.96
+---------------------------------------------------------------
+raining with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 0.75 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: False
+Shape of A from adatron: (1001, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 0.75 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 783, Total samples: 1000
+Accuracy: 0.783
+Evaluation completed.
+Gaussian Kernel (Sigma 0.75) Accuracy: 0.783
+---------------------------------------------------------------
+Training with kernel_gaussian kernel...
+Gaussian Kernel: Computing with sigma 1.0 on input of shape (2000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (2000, 2000)
+Kernel matrix shape: (2000, 2000)
+Training Adatron...
+Shape of K: (2000, 2000)
+Shape of y0: (2000, 1)
+Training completed with convergence status: False
+Shape of A from adatron: (1001, 2000)
+Predicting with kernel_gaussian kernel...
+Shape of A_last_epoch: (2000,), Shape of A_flat: (2000,)
+Shape of y_train_flat: (2000,)
+Gaussian Kernel: Computing with sigma 1.0 on input of shape (3000, 2)
+Gaussian Kernel: Resulting kernel matrix shape (3000, 3000)
+Shape of K_test: (2000, 1000)
+Shape of predictions_raw: (1, 2000)
+Shape of predictions: (1000,)
+Prediction completed.
+Evaluating accuracy...
+Correct predictions: 634, Total samples: 1000
+Accuracy: 0.634
+Evaluation completed.
+Gaussian Kernel (Sigma 1.0) Accuracy: 0.634

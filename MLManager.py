@@ -69,8 +69,8 @@ class MLManager:
                 for index in range(len(feature_p_values))],
                 key=lambda x: x[2]  # Sort by corrected p-value
             )
-
-            with open(f'Data/fdr_results_{method}.csv', mode='w', newline='') as file:
+            joined_timestamps = '_'.join(self.dataManager._TIMESTAMPS)
+            with open(f'Data/{joined_timestamps}_fdr_results_{method}.csv', mode='w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(['Feature', 'Original P-value', 'Corrected P-value', 'Significant'])
                 

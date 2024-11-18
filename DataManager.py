@@ -13,6 +13,7 @@ class RossGroups(Enum):
 class DataManager:
     
     def __init__(self, raw_data):
+        self._TOTAL_TIMESTAMPS = ['T1', 'T2', 'T3', 'T4']
         self._TIMESTAMPS = ['T3', 'T4']
         self.CHICKENS_PER_GROUP = 8
         self.data = raw_data
@@ -21,72 +22,41 @@ class DataManager:
             RossGroups.WIDE_BREAST : {}
         }
         self.FEATURE_LST = []
-        # self.selected_features = [ # four timestamps
-        #     "ADENINE",
-        #     "ADENOSINE",
-        #     "ASPARTATE",
-        #     "Leu-Ala",
-        #     "Leu-Gly",
-        #     "Pseudouridine",
-        #     "GLUTAMATE",
-        #     "L-Methionine sulfoxide",
-        #     "TREHALOSE",
-        #     "PROLINE",
-        #     "ALLANTOIN",
-        #     "4-Hydroxyphenylacetic acid",
-        #     "CYSTATHIONINE",
-        #     "Dehydroascorbic acid",
-        #     "Leucine",
-        #     "PYROGLUTAMATE",
-        #     "ASPARAGINE",
-        #     "CREATINE",
-        #     "DIACETYL",
-        #     "D-MANNOSAMINE",
-        #     "2-Isopropylmalic acid",
-        #     "2-OXOADIPATE",
-        #     "3-Methyl-L-histidine",
-        #     "GLYCEROL",
-        #     "SERINE",
-        #     "Homocitrulline",
-        #     "Saccharic acid 1,4-lactone",
-        #     "NORLEUCINE"
-        # ]
-        # T1, T2, T3
-        # self.selected_features = ['ADENINE', 'ADENOSINE', 'ASPARTATE', 'Leu-Ala', 'Leu-Gly', 'Pseudouridine', 'GLUTAMATE', 'L-Methionine sulfoxide', 'TREHALOSE', 'PROLINE', 'ALLANTOIN', '4-Hydroxyphenylacetic acid', 'CYSTATHIONINE', 'Dehydroascorbic acid', 'Leucine', 'PYROGLUTAMATE', 'ASPARAGINE', 'CREATINE', 'DIACETYL', 'D-MANNOSAMINE', '2-Isopropylmalic acid', '2-OXOADIPATE', '3-Methyl-L-histidine', 'GLYCEROL', 'SERINE', 'Homocitrulline', 'Saccharic acid 1,4-lactone', 'NORLEUCINE']
-        # T2, T3, T4
-        self.selected_features = ['ADENINE', 'ADENOSINE', 'ASPARTATE', 'Leu-Ala', 'Leu-Gly', 'Pseudouridine', 'GLUTAMATE', 'L-Methionine sulfoxide', 'TREHALOSE', 'PROLINE', 'ALLANTOIN', '4-Hydroxyphenylacetic acid', 'CYSTATHIONINE', 'Dehydroascorbic acid', 'Leucine', 'PYROGLUTAMATE', 'ASPARAGINE', 'CREATINE', 'DIACETYL', 'D-MANNOSAMINE', '2-Isopropylmalic acid', '2-OXOADIPATE', '3-Methyl-L-histidine', 'GLYCEROL', 'SERINE', 'Homocitrulline', 'Saccharic acid 1,4-lactone', 'NORLEUCINE']
-        # T1, T2
-        self.selected_features = ['ADENINE', 'ADENOSINE', 'ASPARTATE', 'Leu-Ala', 'Leu-Gly', 'Pseudouridine', 'GLUTAMATE', 'L-Methionine sulfoxide', 'TREHALOSE', 'PROLINE', 'ALLANTOIN', '4-Hydroxyphenylacetic acid', 'CYSTATHIONINE', 'Dehydroascorbic acid', 'Leucine', 'PYROGLUTAMATE', 'ASPARAGINE', 'CREATINE', 'DIACETYL', 'D-MANNOSAMINE', '2-Isopropylmalic acid', '2-OXOADIPATE', '3-Methyl-L-histidine', 'GLYCEROL', 'SERINE', 'Homocitrulline', 'Saccharic acid 1,4-lactone', 'NORLEUCINE']
-        # T2, T3
-        self.selected_features = ['ADENINE', 'ADENOSINE', 'ASPARTATE', 'Leu-Ala', 'Leu-Gly', 'Pseudouridine', 'GLUTAMATE', 'L-Methionine sulfoxide', 'TREHALOSE', 'PROLINE', 'ALLANTOIN', '4-Hydroxyphenylacetic acid', 'CYSTATHIONINE', 'Dehydroascorbic acid', 'Leucine', 'PYROGLUTAMATE', 'ASPARAGINE', 'CREATINE', 'DIACETYL', 'D-MANNOSAMINE', '2-Isopropylmalic acid', '2-OXOADIPATE', '3-Methyl-L-histidine', 'GLYCEROL', 'SERINE', 'Homocitrulline', 'Saccharic acid 1,4-lactone', 'NORLEUCINE']
-        # T3, T4
-        self.selected_features = ['ADENINE', 'ADENOSINE', 'ASPARTATE', 'Leu-Ala', 'Leu-Gly', 'Pseudouridine', 'GLUTAMATE', 'L-Methionine sulfoxide', 'TREHALOSE', 'PROLINE', 'ALLANTOIN', '4-Hydroxyphenylacetic acid', 'CYSTATHIONINE', 'Dehydroascorbic acid', 'Leucine', 'PYROGLUTAMATE', 'ASPARAGINE', 'CREATINE', 'DIACETYL', 'D-MANNOSAMINE', '2-Isopropylmalic acid', '2-OXOADIPATE', '3-Methyl-L-histidine', 'GLYCEROL', 'SERINE', 'Homocitrulline', 'Saccharic acid 1,4-lactone', 'NORLEUCINE']
         
-
+        # T1, T2, T3, T4
+        self.selected_features = ['ADENINE', 'ADENOSINE', 'ASPARTATE', 'Leu-Ala', 'Leu-Gly', 'Pseudouridine', 'GLUTAMATE', 'L-Methionine sulfoxide', 'TREHALOSE', 'PROLINE', 'ALLANTOIN', '4-Hydroxyphenylacetic acid', 'CYSTATHIONINE', 'Dehydroascorbic acid', 'Leucine', 'PYROGLUTAMATE', 'ASPARAGINE', 'CREATINE', 'DIACETYL', 'D-MANNOSAMINE', '2-Isopropylmalic acid', '2-OXOADIPATE', '3-Methyl-L-histidine', 'GLYCEROL', 'SERINE', 'Homocitrulline', 'Saccharic acid 1,4-lactone', 'NORLEUCINE']
+        # T1, T2, T3
+        self.selected_features = ['Leu-Ala', 'Leu-Gly', 'ADENOSINE', 'Pseudouridine', 'ADENINE', 'ASPARTATE']
+        # T2, T3, T4
+        self.selected_features = ['2-OXOADIPATE', 'ADENINE', 'GLUTAMATE', 'N-(2-Methylbutyryl)glycine', 'RHAMNOSE', 'Saccharopine', 'Uric acid', 'ASPARTATE', 'ADENOSINE', 'TREHALOSE', 'DIACETYL', 'TRANS-ACONITATE', 'Choline glycerophosphate', 'Leu-Ala', 'GLUTARATE', 'Pseudouridine', 'Pyrogallol', 'GLYCEROL', 'L-Methionine sulfoxide', '5-Keto-D-gluconic acid', 'Ac-Val-OH', '4-Hydroxyphenylacetic acid', 'Ureidosuccinic acid', '3-Methyl-L-histidine', 'ALLANTOIN', 'Homocitrulline', 'QUINATE', 'BETAINE', 'Dehydroascorbic acid', 'Gamma-L-Glutamyl-L-alanine', 'SERINE', 'TAURINE', 'Dehydroacetic acid', 'PYROGLUTAMATE', 'DEOXYCYTIDINE', 'CYSTATHIONINE', 'CREATINE', 'GLYCERATE', 'N-Acetyl-L-methionine', '2-Hydroxyoctanoic acid', '2-Isopropylmalic acid', 'Citraconic acid', 'ERYTHRITOL', 'GLYCINE', 'Leucine', 'Leu-Gly', 'OROTATE', 'PROLINE', 'Saccharic acid 1,4-lactone', 'Sorbose', 'Nalpha-Acetyl-L-ornithine', '5-Methyluridine', 'Gulonic acid gamma-lactone', 'TRIGONELLINE', '4-ACETAMIDOBUTANOATE', 'Alpha-Ketoglutaric acid', 'N-ACETYLGLUTAMATE', 'SUCCINATE', 'GUANOSINE', 'Myo-Inositol', 'Fructose', 'Xylose', 'TRANS-4-HYDROXY-L-PROLINE', 'Mannose', 'N-Acetyl-L-proline', '2-Methyl-4-pentenoic acid', 'TYROSINE', 'N-ACETYLASPARAGINE', '2,5-DIHYDROXYBENZOATE', 'D-MANNOSAMINE', 'GLUTAMINE', 'N-Acetyl-L-tyrosine', 'Nepsilon-Trimethyllysine', 'Alpha-Hydroxyglutaric acid', 'PHENYLALANINE', 'N-FORMYL-L-METHIONINE', 'HYPOXANTHINE', '4-HYDROXYBENZALDEHYDE', 'NORLEUCINE', 'CITRULLINE', 'INDOLE-3-ACETATE', 'N-ACETYLALANINE', 'N-ACETYLPHENYLALANINE', 'p-Coumaric acid']
+        # T1, T2
+        self.selected_features = ['Leu-Ala', 'Leu-Gly', 'ADENOSINE', 'Pseudouridine', 'ADENINE']
+        # T2, T3
+        self.selected_features = ['ADENINE', 'ADENOSINE', 'GLUTAMATE', 'RHAMNOSE', 'TREHALOSE', 'Leu-Ala', 'Leu-Gly', 'Saccharopine', 'GLYCEROL', 'N-Acetyl-L-methionine', 'Ac-Val-OH', 'ASPARTATE', 'O-ACETYLSERINE', 'Pseudouridine', 'N-(2-Methylbutyryl)glycine', 'Pyrogallol', 'SUCCINATE', '2-OXOADIPATE', 'DIACETYL', 'GUANOSINE', 'ALLANTOIN', 'Ureidosuccinic acid', 'L-Methionine sulfoxide', 'GLUTARATE', 'SERINE', 'BETAINE', 'CYSTATHIONINE', 'Homocitrulline']
+        # T3, T4
+        self.selected_features = ['2-OXOADIPATE', '3-Methyl-L-histidine', 'ADENINE', 'ASPARTATE', 'GLUTAMATE', 'GLUTARATE', 'QUINATE', 'RHAMNOSE', 'Pseudouridine', 'ADENOSINE', 'TRANS-ACONITATE', 'TREHALOSE', 'Uric acid', '5-Keto-D-gluconic acid', 'Choline glycerophosphate', 'DIACETYL', 'L-Methionine sulfoxide', 'N-ACETYLPHENYLALANINE', 'Pyrogallol', 'CREATINE', 'PHENYLALANINE', 'N-ACETYLASPARAGINE', '2-Isopropylmalic acid', '4-Hydroxyphenylacetic acid', 'Dehydroacetic acid', 'DIHYDROURACIL', 'Saccharopine', 'Gulonic acid gamma-lactone', 'CYSTATHIONINE', 'Homocitrulline']
+        
         self._preprocess()
 
 
     def _preprocess(self):
         if self.data is not None:
-            print("Preprocessing data...")
-            
-            df_z_scaled = self.data.copy()            
-            
-            df_z_scaled = df_z_scaled.drop(['Tags', 'Formula'], axis=1)
+            df_z_scaled = self.data.drop(['Tags', 'Formula'], axis=1)
+            reduced_timestamps = [ts for ts in self._TOTAL_TIMESTAMPS if ts not in self._TIMESTAMPS]
+            drop_columns = [col for col in df_z_scaled.columns if any(ts in col for ts in reduced_timestamps)]
+            df_z_scaled = df_z_scaled.drop(columns=drop_columns)
             df_T = df_z_scaled.T
-            df_T.columns = df_T.iloc[0]
-            df_T.index.name = 'Timestamp'
+            df_T.columns, df_T.index.name = df_T.iloc[0], 'Timestamp'
             df_T = df_T.drop(df_T.index[0])
-            
-            self._FEATURE_CNT = len(df_T.columns)
-            self.FEATURE_LST = df_T.columns.tolist()
-            # print(self.FEATURE_LST)
+            print(df_T.T.columns)
+            self._FEATURE_CNT, self.FEATURE_LST = len(df_T.columns), df_T.columns.tolist()
             self._process_group(df_T, RossGroups.CONTROL)
             self._process_group(df_T, RossGroups.WIDE_BREAST)
-            
-            
         else:
             print("No data to preprocess.")
+
+
+
     
     def _process_4_random_forest(self):
         results = []
@@ -97,7 +67,7 @@ class DataManager:
             single_row_chick = df_filtered.values.flatten()
             result_row_with_zero = np.append(single_row_chick, 0)
             results.append(result_row_with_zero)
-            # print(f"CONTROL chick processed: {result_row_with_zero}")  # Debug print
+            print(f"CONTROL chick processed: {control_chick}")  # Debug print
 
         for index in range(1, self.CHICKENS_PER_GROUP + 1):
             control_index = RossGroups.WIDE_BREAST.value + str(index)        
@@ -106,7 +76,7 @@ class DataManager:
             single_row_chick = df_filtered.values.flatten()
             result_row_with_one = np.append(single_row_chick, 1)
             results.append(result_row_with_one)
-            # print(f"WIDE_BREAST chick processed: {result_row_with_one}")  # Debug print
+            print(f"WIDE_BREAST chick processed: {control_chick}")  # Debug print
 
         final_df = pd.DataFrame(results)
         # print(f"Final DataFrame shape: {final_df.shape}")  # Debug print
